@@ -4,8 +4,11 @@ registrations")
 itk_module(ITKGPURegistrationCommon
   DEPENDS
     ITKCommon
+    ITKRegistrationCommon
     ITKGPUCommon
     ITKGPUFiniteDifference
+    ITKGPUImageFilterBase
+    ITKSmoothing
   TEST_DEPENDS
     ITKTestKernel
   DESCRIPTION
