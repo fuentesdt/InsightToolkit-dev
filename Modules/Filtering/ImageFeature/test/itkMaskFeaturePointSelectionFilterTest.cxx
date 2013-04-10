@@ -64,6 +64,10 @@ int itkMaskFeaturePointSelectionFilterTest( int argc, char * argv[] )
   filter->SetSelectFraction( 0.01 );
   filter->ComputeStructureTensorsOff();
 
+  InputImageType::SizeType radius;
+  radius.Fill(1);
+  filter->SetConnectivityRadius( radius );
+
   std::cout << "Filter: " << filter << std::endl;
 
   try
