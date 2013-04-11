@@ -17,10 +17,13 @@ itk_wrap_class("itk::PointSet" POINTER)
     itk_wrap_template("${ITKM_PD${d}}${d}ST${ITKM_D}${d}${d}${ITKM_D}${ITKM_D}"
       "${ITKT_PD${d}},${d},itk::DefaultStaticMeshTraits< ${ITKT_D},${d},${d},${ITKT_D},${ITKT_D},${ITKT_D} >")
   endforeach(d)
+  # wrap the point set types needed for MaskFeaturePointSelectionFilter and BlockMatchingImageFilter
   foreach(d ${ITK_WRAP_DIMS})
-    # Also wrap the point set type needed for the kernel transforms,
-    # which may be a bug in ITK but they're needed currently.
-    itk_wrap_template("M${ITKM_D}${d}${d}STM${ITKM_D}${d}${d}${d}${d}${ITKM_F}${ITKM_F}M${ITKM_D}${d}${d}"
+    itk_wrap_template("M${ITKM_D}${d}${d}${d}STM${ITKM_D}${d}${d}${d}${d}${ITKM_F}${ITKM_F}M${ITKM_D}${d}${d}"
       "itk::Matrix <${ITKT_D},${d},${d}>,${d},itk::DefaultStaticMeshTraits< itk::Matrix <${ITKT_D},${d},${d}>,${d},${d},${ITKT_F},${ITKT_F},itk::Matrix <${ITKT_D},${d},${d}> >")
+    itk_wrap_template("V${ITKM_F}${d}${d}STV${ITKM_F}${d}${d}${d}${ITKM_F}${ITKM_F}V${ITKM_F}${d}"
+      "itk::Vector <${ITKT_F},${d}>,${d},itk::DefaultStaticMeshTraits< itk::Vector <${ITKT_F},${d}>,${d},${d},${ITKT_F},${ITKT_F},itk::Vector <${ITKT_F},${d}> >")
+    itk_wrap_template("${ITKM_D}${d}ST${ITKM_D}${d}${d}${ITKM_F}${ITKM_F}${ITKM_D}"
+       "${ITKT_D},${d},itk::DefaultStaticMeshTraits< ${ITKT_D},${d},${d},${ITKT_F},${ITKT_F},${ITKT_D} >")
   endforeach(d)
 itk_end_wrap_class()
