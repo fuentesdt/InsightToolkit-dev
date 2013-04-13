@@ -140,6 +140,9 @@ public:
   itkSetInputMacro(FeaturePoints, FeaturePointsType);
   itkGetInputMacro(FeaturePoints, FeaturePointsType);
 
+  /** set initial displacements */
+  void SetInitialDisplacement(typename DisplacementsType::PointDataContainer *);
+
   inline DisplacementsType * GetDisplacements()
     {
     return dynamic_cast< DisplacementsType * >( this->ProcessObject::GetOutput( 0 ) );

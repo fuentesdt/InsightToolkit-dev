@@ -33,6 +33,8 @@ BlockMatchingImageFilter< TFixedImage, TMovingImage, TFeatures, TDisplacements, 
   // defaults
   this->m_BlockRadius.Fill( 2 );
   this->m_SearchRadius.Fill( 3 );
+  this->m_DisplacementsVectorsArray = NULL;
+  this->m_PointsCount = itk::NumericTraits< SizeValueType >::Zero;
 
   // make the outputs
   this->ProcessObject::SetNumberOfRequiredOutputs( 2 );
@@ -129,17 +131,41 @@ BlockMatchingImageFilter< TFixedImage, TMovingImage, TFeatures, TDisplacements, 
   return 0;
 }
 
+template< class TFixedImage, class TMovingImage, class TFeatures, class TDisplacements, class TSimilarities >
+void
+BlockMatchingImageFilter< TFixedImage, TMovingImage, TFeatures, TDisplacements, TSimilarities >
+::SetInitialDisplacement(typename DisplacementsType::PointDataContainer *displacementsData)
+{
+  if( !this->m_DisplacementsVectorsArray )
+   {
+    this->m_PointsCount = displacementsData->Size();
+    this->m_DisplacementsVectorsArray = new DisplacementsVector[ this->m_PointsCount ];
+    for ( SizeValueType i = 0; i < this->m_PointsCount; i++ )
+      {
+      this->m_DisplacementsVectorsArray[ i ] = displacementsData->GetElement(i);
+      }
+   }
+}
+
 
 template< class TFixedImage, class TMovingImage, class TFeatures, class TDisplacements, class TSimilarities >
 void
 BlockMatchingImageFilter< TFixedImage, TMovingImage, TFeatures, TDisplacements, TSimilarities >
 ::BeforeThreadedGenerateData()
 {
-  this->m_PointsCount = itk::NumericTraits< SizeValueType >::Zero;
   FeaturePointsConstPointer featurePoints = this->GetFeaturePoints();
   if ( featurePoints )
     {
-    this->m_PointsCount = featurePoints->GetNumberOfPoints();
+    if ( this->m_PointsCount == itk::NumericTraits< SizeValueType >::Zero )
+      {
+       this->m_PointsCount = featurePoints->GetNumberOfPoints();
+      }
+    else if ( this->m_PointsCount != featurePoints->GetNumberOfPoints() )
+      {
+       itkExceptionMacro( "Feature points: "<< featurePoints->GetNumberOfPoints()
+                                            << " != Displacements "
+                                            << this->m_PointsCount << "." );
+      }
     }
 
   if ( this->m_PointsCount < 1 )
@@ -147,8 +173,18 @@ BlockMatchingImageFilter< TFixedImage, TMovingImage, TFeatures, TDisplacements, 
     itkExceptionMacro( "Invalid number of feature points: " << this->m_PointsCount << "." );
     }
 
-  this->m_DisplacementsVectorsArray = new DisplacementsVector[ this->m_PointsCount ];
   this->m_SimilaritiesValuesArray = new SimilaritiesValue[ this->m_PointsCount ];
+
+  // initialize displacements to zero in no data available
+  if( !this->m_DisplacementsVectorsArray )
+   {
+    this->m_DisplacementsVectorsArray = new DisplacementsVector[ this->m_PointsCount ];
+    for ( SizeValueType i = 0; i < this->m_PointsCount; i++ )
+      {
+      this->m_DisplacementsVectorsArray[ i ] = NumericTraits< DisplacementsVector >::Zero;
+      }
+   }
+
 }
 
 template< class TFixedImage, class TMovingImage, class TFeatures, class TDisplacements, class TSimilarities >
@@ -224,7 +260,7 @@ BlockMatchingImageFilter< TFixedImage, TMovingImage, TFeatures, TDisplacements, 
 ::ThreadedGenerateData( ThreadIdType threadId ) throw ( ExceptionObject )
 {
   FixedImageConstPointer fixedImage = this->GetFixedImage();
-  MovingImageConstPointer floatingImage = this->GetMovingImage();
+  MovingImageConstPointer movingImage = this->GetMovingImage();
   FeaturePointsConstPointer featurePoints = this->GetFeaturePoints();
 
   SizeValueType threadCount = this->GetNumberOfThreads();
@@ -256,10 +292,15 @@ BlockMatchingImageFilter< TFixedImage, TMovingImage, TFeatures, TDisplacements, 
   // loop thru feature points
   for ( SizeValueType idx = first, last = first + count; idx < last; idx++ )
     {
-    FeaturePointsPhysicalCoordinates originalLocation = featurePoints->GetPoint( idx );
-    ImageIndexType fixedIndex,floatIndex;
-    fixedImage->TransformPhysicalPointToIndex(    originalLocation, fixedIndex );
-    floatingImage->TransformPhysicalPointToIndex( originalLocation, floatIndex );
+    // get index of feature point on moving image
+    FeaturePointsPhysicalCoordinates movingLocation = featurePoints->GetPoint( idx );
+    ImageIndexType movingIndex;
+    movingImage->TransformPhysicalPointToIndex( movingLocation, movingIndex );
+
+    // get initial index of feature point on fixed image
+    FeaturePointsPhysicalCoordinates fixedLocation = movingLocation + this->m_DisplacementsVectorsArray[ idx ] ;
+    ImageIndexType fixedIndex;
+    fixedImage->TransformPhysicalPointToIndex(  fixedLocation , fixedIndex );
 
     // the block is selected for a minimum similarity metric
     SimilaritiesValue  similarity = NumericTraits< SimilaritiesValue >::Zero;
@@ -270,13 +311,13 @@ BlockMatchingImageFilter< TFixedImage, TMovingImage, TFeatures, TDisplacements, 
     // set centers of window and center regions to current location
     ImageIndexType start = fixedIndex - this->m_SearchRadius;
     window.SetIndex( start );
-    center.SetIndex( floatIndex );
+    center.SetIndex( movingIndex );
 
     // iterate over neighborhoods in region window, for each neighborhood: iterate over voxels in blockRadius
     ConstNeighborhoodIterator< FixedImageType > windowIterator( m_BlockRadius, fixedImage, window );
 
     // iterate over voxels in neighborhood of current feature point
-    ConstNeighborhoodIterator< MovingImageType > centerIterator( m_BlockRadius, floatingImage, center );
+    ConstNeighborhoodIterator< MovingImageType > centerIterator( m_BlockRadius, movingImage, center );
     centerIterator.GoToBegin();
 
     // iterate over neighborhoods in region window
@@ -315,7 +356,7 @@ BlockMatchingImageFilter< TFixedImage, TMovingImage, TFeatures, TDisplacements, 
         {
         FeaturePointsPhysicalCoordinates newLocation;
         fixedImage->TransformIndexToPhysicalPoint( windowIterator.GetIndex(), newLocation );
-        displacement = newLocation - originalLocation;
+        displacement = newLocation - movingLocation;
         similarity = sim;
         }
       }
