@@ -21,6 +21,7 @@
 #include "itkBlockMatchingImageFilter.h"
 #include "itkImageRegionConstIterator.h"
 #include "itkConstNeighborhoodIterator.h"
+#include "itkConstantBoundaryCondition.h"
 #include <limits>
 
 
@@ -314,10 +315,12 @@ BlockMatchingImageFilter< TFixedImage, TMovingImage, TFeatures, TDisplacements, 
     center.SetIndex( movingIndex );
 
     // iterate over neighborhoods in region window, for each neighborhood: iterate over voxels in blockRadius
-    ConstNeighborhoodIterator< FixedImageType > windowIterator( m_BlockRadius, fixedImage, window );
+    typedef itk::ConstantBoundaryCondition<FixedImageType>  FixedBoundaryConditionType;
+    ConstNeighborhoodIterator< FixedImageType,FixedBoundaryConditionType > windowIterator( m_BlockRadius, fixedImage, window );
 
     // iterate over voxels in neighborhood of current feature point
-    ConstNeighborhoodIterator< MovingImageType > centerIterator( m_BlockRadius, movingImage, center );
+    typedef itk::ConstantBoundaryCondition<MovingImageType>  MovingBoundaryConditionType;
+    ConstNeighborhoodIterator< MovingImageType,MovingBoundaryConditionType > centerIterator( m_BlockRadius, movingImage, center );
     centerIterator.GoToBegin();
 
     // iterate over neighborhoods in region window
