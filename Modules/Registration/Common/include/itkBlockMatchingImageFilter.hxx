@@ -147,6 +147,14 @@ BlockMatchingImageFilter< TFixedImage, TMovingImage, TFeatures, TDisplacements, 
     itkExceptionMacro( "Invalid number of feature points: " << this->m_PointsCount << "." );
     }
 
+  // block match assumes images have the same spacing
+  FixedImageConstPointer fixedImage = this->GetFixedImage();
+  MovingImageConstPointer movingImage = this->GetMovingImage();
+  if ( fixedImage->GetSpacing() != movingImage->GetSpacing() )
+    {
+    itkExceptionMacro( "Image spacing must agree for block match neighborhood search. Resample the images." );
+    }
+
   this->m_DisplacementsVectorsArray = new DisplacementsVector[ this->m_PointsCount ];
   this->m_SimilaritiesValuesArray = new SimilaritiesValue[ this->m_PointsCount ];
 }
