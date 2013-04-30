@@ -19,8 +19,10 @@
 #define __itkGPUBlockMatchingImageFilter_hxx
 
 #include "itkGPUBlockMatchingImageFilter.h"
+#include "itkImageRegionIterator.h"
 #include "itkCastImageFilter.h"
 #include "itkTimeProbe.h"
+
 
 namespace itk
 {
