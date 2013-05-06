@@ -473,7 +473,6 @@ bool GPUKernelManager::LaunchKernel(int kernelIdx, int dim, size_t *globalWorkSi
                                     localWorkSize, 0, NULL, NULL);
   OpenCLCheckError(errid, __FILE__, __LINE__, ITK_LOCATION);
 
-/*
 std::cout << "Check point 1" << std::endl;
 
 // debug -- synchronize
@@ -481,12 +480,12 @@ errid = clFlush(m_Manager->GetCommandQueue(m_CommandQueueId));
 OpenCLCheckError(errid, __FILE__, __LINE__, ITK_LOCATION);
 
 std::cout << "Check point 2" << std::endl;
-*/
+
 errid = clFinish(m_Manager->GetCommandQueue(m_CommandQueueId));
 OpenCLCheckError(errid, __FILE__, __LINE__, ITK_LOCATION);
-/*
+
 std::cout << "Wait for kernel execution ends" << std::endl;
-*/
+
 
   if(errid != CL_SUCCESS)
     {

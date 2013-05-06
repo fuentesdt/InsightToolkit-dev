@@ -139,6 +139,7 @@ public:
 protected:
   GPUKernelManager();
   virtual ~GPUKernelManager() {
+    m_Manager->DestroyInstance();
   }
 
   bool CheckArgumentReady(int kernelIdx);

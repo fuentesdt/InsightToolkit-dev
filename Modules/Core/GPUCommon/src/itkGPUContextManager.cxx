@@ -39,6 +39,12 @@ std::cout << "Context is destroyed" << std::endl;
   m_Instance = NULL;
 }
 
+void pfn_notify(const char *errinfo, const void *private_info, size_t cb, void *user_data)
+{
+  fprintf(stderr, "OpenCL Error (via pfn_notify): %s\n", errinfo);
+  fprintf(stdout, "OpenCL Error (via pfn_notify): %s\n", errinfo);
+}
+
 GPUContextManager::GPUContextManager()
 {
   cl_int errid;
@@ -57,7 +63,8 @@ GPUContextManager::GPUContextManager()
   m_Devices = OpenCLGetAvailableDevices(m_Platform, devType, &m_NumberOfDevices);
 
   // create context
-  m_Context = clCreateContext(0, m_NumberOfDevices, m_Devices, NULL, NULL, &errid);
+  //m_Context = clCreateContext(0, m_NumberOfDevices, m_Devices, NULL, NULL, &errid);
+  m_Context = clCreateContext(0, m_NumberOfDevices, m_Devices, &pfn_notify, NULL, &errid);
 //   m_Context = clCreateContext(0, m_NumberOfDevices, m_Devices, clLogMessagesToStdoutAPPLE, NULL, &errid);
 
   OpenCLCheckError( errid, __FILE__, __LINE__, ITK_LOCATION );
