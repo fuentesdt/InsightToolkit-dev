@@ -57,8 +57,14 @@ namespace fem
  */
 
 
-template <class TFixedImage, class TMovingImage, class TMaskImage, class TMesh, class TDeformationField>
-class ITK_EXPORT  PhysicsBasedNonRigidRegistrationMethod : public ImageToImageFilter<TMovingImage, TDeformationField>
+template <
+  class TFixedImage,
+  class TMovingImage = TFixedImage,
+  class TMaskImage = itk::Image< float, TFixedImage::ImageDimension >,
+  class TMesh = itk::Mesh< float, TFixedImage::ImageDimension >,
+  class TDeformationField = itk::Image< itk::Vector< float, TFixedImage::ImageDimension >, TFixedImage::ImageDimension > >
+class ITK_EXPORT  PhysicsBasedNonRigidRegistrationMethod :
+public ImageToImageFilter< TMovingImage, TDeformationField  >
 {
 public:
   typedef PhysicsBasedNonRigidRegistrationMethod               Self;
