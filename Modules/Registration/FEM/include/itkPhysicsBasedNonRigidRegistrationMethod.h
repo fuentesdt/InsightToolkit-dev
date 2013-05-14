@@ -20,6 +20,7 @@
 #define __itkPhysicsBasedNonRigidRegistrationMethod_h
 
 
+#include "itkImageToImageFilter.h"
 #include "itkMaskFeaturePointSelectionFilter.h"
 #include "itkBlockMatchingImageFilter.h"
 #include "itkFEMScatteredDataPointSetToImageFilter.h"
@@ -60,7 +61,7 @@ namespace fem
 template <
   class TFixedImage,
   class TMovingImage = TFixedImage,
-  class TMaskImage = itk::Image< float, TFixedImage::ImageDimension >,
+  class TMaskImage = itk::Image< short, TFixedImage::ImageDimension >,
   class TMesh = itk::Mesh< float, TFixedImage::ImageDimension >,
   class TDeformationField = itk::Image< itk::Vector< float, TFixedImage::ImageDimension >, TFixedImage::ImageDimension > >
 class ITK_EXPORT  PhysicsBasedNonRigidRegistrationMethod :
@@ -141,6 +142,18 @@ public:
   /** set/get moving image */
   itkSetInputMacro(Mesh, MeshType);
   itkGetInputMacro(Mesh, MeshType);
+
+  /** set/get FEM Filter */
+  itkSetObjectMacro(FEMFilter, FEMFilterType);
+  itkGetModifiableObjectMacro(FEMFilter, FEMFilterType);
+
+  /** set/get Block Matching Filter */
+  itkSetObjectMacro(BlockMatchingFilter, BlockMatchingFilterType);
+  itkGetModifiableObjectMacro(BlockMatchingFilter, BlockMatchingFilterType);
+
+  /** set/get Feature Selection Filter Filter */
+  itkSetObjectMacro(FeatureSelectionFilter, FeatureSelectionFilterType);
+  itkGetModifiableObjectMacro(FeatureSelectionFilter, FeatureSelectionFilterType);
 
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */

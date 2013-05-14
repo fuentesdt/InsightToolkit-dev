@@ -1,0 +1,6 @@
+itk_wrap_class("itk::fem::FEMScatteredDataPointSetToImageFilter" POINTER)
+  foreach(d ${ITK_WRAP_DIMS})
+    itk_wrap_template("PSV${ITKM_F}${d}${d}M${ITKM_F}${d}IV${ITKM_F}${d}${d}PS${ITKM_D}${d}PSM${ITKM_F}${d}${d}${d}"
+                      "itk::PointSet< itk::Vector< ${ITKT_F}, ${d} >, ${d} >, itk::Mesh< ${ITKT_F}, ${d} >, itk::Image< itk::Vector< ${ITKT_F}, ${d} >, ${d} >, itk::PointSet< ${ITKT_D}, ${d} > , itk::PointSet< itk::Matrix< ${ITKT_F}, ${d} , ${d} >, ${d}  >")
+  endforeach(d)
+itk_end_wrap_class()
