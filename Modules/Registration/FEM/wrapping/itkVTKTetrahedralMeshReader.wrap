@@ -1,0 +1,5 @@
+itk_wrap_class("itk::VTKTetrahedralMeshReader" POINTER_WITH_SUPERCLASS)
+  foreach(d ${ITK_WRAP_DIMS})
+    itk_wrap_template("M${ITKM_F}${d}" "itk::Mesh< ${ITKT_F}, ${d} >")
+  endforeach(d)
+itk_end_wrap_class()
