@@ -155,6 +155,9 @@ public:
   itkSetObjectMacro(FeatureSelectionFilter, FeatureSelectionFilterType);
   itkGetModifiableObjectMacro(FeatureSelectionFilter, FeatureSelectionFilterType);
 
+  /** Create the deformed image */
+  void CreateDeformedImage(typename MovingImageType::Pointer& pDeformedImage);
+
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
   /** Currently only the 3D implementation is available due to a narrow
