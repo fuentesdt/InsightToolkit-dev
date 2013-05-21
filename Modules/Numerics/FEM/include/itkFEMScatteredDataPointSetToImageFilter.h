@@ -189,7 +189,7 @@ public:
   typedef FEMObject<ImageDimension>                 FEMObjectType;
 
   /** FEM solver typedef support */
-  typedef RobustSolver<ImageDimension>              FEMSolverType;
+  typedef FEMRobustSolver<ImageDimension>              FEMSolverType;
 
   /** FEM element typedef support */
   typedef Element3DC0LinearTetrahedronStrain        FEMTetrahedronType;
@@ -238,6 +238,16 @@ public:
 
   /** Get the number of element in each dimension of the generated mesh */
   itkGetConstReferenceMacro(NumberOfElements, SizeType);
+
+  /**
+  * Set youngs/elastic modulus
+  */
+  void SetYoungsModulus(double modulus);
+
+  /**
+  * Set poisson's ratio
+  */
+  void SetPoissonsRatio(double poi);
 
 protected:
 

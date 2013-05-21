@@ -43,7 +43,7 @@ namespace fem
  *       typedef itk::fem::FEMObject<3>    FEMObjectType;
  *       FEMObjectObjectType::Pointer fem = FEMObjectObjectType::New();
  *       ...
- *       typedef itk::fem::RobustSolver<3>    FEMSolverType;
+ *       typedef itk::fem::FEMRobustSolver<3>    FEMSolverType;
  *       FEMSolverType::Pointer solver = FEMSolverType::New();
  *
  *       solver->SetInput( fem );
@@ -80,11 +80,11 @@ namespace fem
  */
 
 template <unsigned int VDimension = 3>
-class RobustSolver : public Solver<VDimension>
+class FEMRobustSolver : public Solver<VDimension>
 {
 public:
   /** Standard class typedefs. */
-  typedef RobustSolver              Self;
+  typedef FEMRobustSolver              Self;
   typedef Solver<VDimension>        Superclass;
   typedef SmartPointer<Self>        Pointer;
   typedef SmartPointer<const Self>  ConstPointer;
@@ -93,7 +93,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods) */
-  itkTypeMacro(RobustSolver, Solver);
+  itkTypeMacro(FEMRobustSolver, Solver);
 
   /** Inherit some types from the superclass. */
   typedef typename Superclass::VectorType                           VectorType;
@@ -167,8 +167,8 @@ protected:
    * Default constructor which sets the indices
    * for the matrix and vector storage.
    */
-  RobustSolver();
-  ~RobustSolver();
+  FEMRobustSolver();
+  ~FEMRobustSolver();
 
   /** Method invoked by the pipeline in order to trigger the computation of
    * the registration. */
@@ -316,7 +316,7 @@ protected:
 
 private:
 
-  RobustSolver(const Self &);   //purposely not implemented
+  FEMRobustSolver(const Self &);   //purposely not implemented
   void operator=(const Self &); //purposely not implemented
 
   /**

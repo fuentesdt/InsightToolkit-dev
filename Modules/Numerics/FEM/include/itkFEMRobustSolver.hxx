@@ -32,8 +32,8 @@ namespace fem
 {
 
 template <unsigned int VDimension>
-RobustSolver<VDimension>
-::RobustSolver()
+FEMRobustSolver<VDimension>
+::FEMRobustSolver()
 {
   this->m_ForceIndex = 0;
   this->m_LandmarkForceIndex = 1;
@@ -57,15 +57,15 @@ RobustSolver<VDimension>
 
 
 template <unsigned int VDimension>
-RobustSolver<VDimension>
-::~RobustSolver()
+FEMRobustSolver<VDimension>
+::~FEMRobustSolver()
 {
 }
 
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::Initialization()
 {
   this->SetLinearSystemWrapper(&m_Itpack);
@@ -102,7 +102,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::InitializeLandmarks()
 {
   /*
@@ -179,7 +179,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::GenerateData()
 {
   // initialize matrix, vector, solution, interpolation grid, and landmark.
@@ -202,7 +202,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::RunSolver()
 {
   // Solve the displacement vector U
@@ -230,7 +230,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::IncrementalSolverWithOutlierRejection()
 {
   // Solve the displacement vector U with outlier rejection
@@ -300,7 +300,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::IncrementalSolverWithoutOutlierRejection()
 {
   // Solve the displacement vector U without outlier rejection
@@ -319,7 +319,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::ComputeLandmarkSimulatedDisplacementAndWeightedError()
 {
   // Compute the approximation error for each landmark for subsequent outlier
@@ -396,7 +396,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::ComputeLandmarkTensor()
 {
   // Compute landmark tensor weighted by a structure tensor if exists
@@ -461,7 +461,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::NthElementWRTDisplacementError(unsigned int nthPoint)
 {
   // Sort the landmarks according to the error norm
@@ -491,7 +491,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::UnselectLandmarks(unsigned int nUnselected)
 {
   if(nUnselected == 0)
@@ -527,7 +527,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::DeleteFromLandmarkBeginning(unsigned int nDeleted)
 {
   if(nDeleted == 0)
@@ -556,7 +556,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::DeleteLandmarksOutOfMesh()
 {
   typedef typename FEMObjectType::LoadIdentifier LoadIdentifier;
@@ -612,7 +612,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::RescaleLandmarkStiffnessMatrix(double oldPointTensorPonderation)
 {
   // PointTensorPonderation is changing throughout outlier rejection.
@@ -628,7 +628,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::AssembleMeshStiffnessMatrix()
 {
   // Assemble the mechanical stiffness matrix from the mesh
@@ -653,7 +653,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::AssembleElementMatrixWithID(const Element::Pointer & element, unsigned int matrixIndex)
 {
   // copy the element stiffness matrix for faster access.
@@ -688,7 +688,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::AssembleLandmarkStiffnessMatrix()
 {
   // Assemble the contribution matrix of the landmarks
@@ -774,7 +774,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::RemoveUnselectedLandmarkContributionInPointStiffnessMatrix()
 {
   // Remove the contribution of the unselected landmarks from the landmark
@@ -860,7 +860,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 float
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::GetLandmarkTensorPonderation(void) const
 {
   const LoadContainerType * loadContainer = this->m_FEMObject->GetLoadContainer();
@@ -887,7 +887,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::AssembleGlobalMatrixFromLandmarksAndMeshMatrices()
 {
   this->m_ls->CopyMatrix( this->m_MeshStiffnessMatrixIndex, this->m_StiffnessMatrixIndex );
@@ -896,7 +896,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::AssembleF()
 {
   const double pointTensorPonderation = GetLandmarkTensorPonderation();
@@ -954,7 +954,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::CalculateExternalForces()
 {
   this->m_ls->MultiplyMatrixSolution( this->m_ExternalForceIndex, this->m_MeshStiffnessMatrixIndex, this->m_SolutionIndex);
@@ -963,7 +963,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::AddExternalForcesToSetMeshZeroEnergy()
 {
    // Add exteranl force to set the mesh energy to be zero, which
@@ -975,7 +975,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::SolveSystem()
 {
   // Solve the linear system of equations
@@ -987,7 +987,7 @@ RobustSolver<VDimension>
 
 template <unsigned int VDimension>
 void
-RobustSolver<VDimension>
+FEMRobustSolver<VDimension>
 ::InitializeInterpolationGrid()
 {
   const InterpolationGridRegionType & region = this->GetRegion();

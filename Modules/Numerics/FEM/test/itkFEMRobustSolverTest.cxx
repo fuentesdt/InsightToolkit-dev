@@ -24,7 +24,7 @@
 
 
 /**
- * RobustSolver requires a FEMObject as input.
+ * FEMRobustSolver requires a FEMObject as input.
  * In this test, we create a FEMObject manually based on a simple 2D mesh and feature points.
  *
  * In most cases, users have a mesh and feature points rather than the FEMObject as inputs.
@@ -54,7 +54,7 @@ int itkFEMRobustSolverTest(int, char *[])
   const unsigned int ParameterDimension = 2;
 
   /** Solver typedef suppot */
-  typedef itk::fem::RobustSolver<DataDimension>    SolverType;
+  typedef itk::fem::FEMRobustSolver<DataDimension>    SolverType;
 
   /** FEMObject typedef suppport */
   typedef itk::fem::FEMObject<DataDimension>       FEMObjectType;

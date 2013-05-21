@@ -75,6 +75,22 @@ FEMScatteredDataPointSetToImageFilter<TInputPointSet, TInputMesh, TOutputImage, 
 template<class TInputPointSet, class TInputMesh, class TOutputImage, class TInputConfidencePointSet, class TInputTensorPointSet>
 void
 FEMScatteredDataPointSetToImageFilter<TInputPointSet, TInputMesh, TOutputImage, TInputConfidencePointSet, TInputTensorPointSet>
+::SetPoissonsRatio(double pr)
+{
+  this->m_Material->SetPoissonsRatio(pr);
+}
+
+template<class TInputPointSet, class TInputMesh, class TOutputImage, class TInputConfidencePointSet, class TInputTensorPointSet>
+void
+FEMScatteredDataPointSetToImageFilter<TInputPointSet, TInputMesh, TOutputImage, TInputConfidencePointSet, TInputTensorPointSet>
+::SetYoungsModulus(double y)
+{
+  this->m_Material->SetYoungsModulus(y);
+}
+
+template<class TInputPointSet, class TInputMesh, class TOutputImage, class TInputConfidencePointSet, class TInputTensorPointSet>
+void
+FEMScatteredDataPointSetToImageFilter<TInputPointSet, TInputMesh, TOutputImage, TInputConfidencePointSet, TInputTensorPointSet>
 ::GenerateData()
 {
   // create the output image
@@ -691,6 +707,7 @@ FEMScatteredDataPointSetToImageFilter<TInputPointSet, TInputMesh, TOutputImage, 
   os << indent << "  Spacing:   " << this->m_Spacing << std::endl;
   os << indent << "  Size:      " << this->m_Size << std::endl;
   os << indent << "  Direction: " << this->m_Direction << std::endl;
+  os << indent << "  Material:  " << this->m_Material  << std::endl;
 }
 
 } // end namespace fem
