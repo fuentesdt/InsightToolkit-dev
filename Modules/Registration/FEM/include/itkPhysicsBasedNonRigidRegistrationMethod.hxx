@@ -123,6 +123,39 @@ PhysicsBasedNonRigidRegistrationMethod<TFixedImage, TMovingImage, TMaskImage, TM
 }
 
 template <class TFixedImage, class TMovingImage, class TMaskImage, class TMesh, class TDeformationField>
+typename TFixedImage::Pointer
+PhysicsBasedNonRigidRegistrationMethod<TFixedImage, TMovingImage, TMaskImage, TMesh, TDeformationField>
+::ApproximationInterpolationHomotopy(typename BlockMatchingFilterType::DisplacementsType * displacements)
+{
+  // assembly and solver
+  this->m_FEMFilter->SetInput( displacements );
+  this->m_FEMFilter->SetMesh( const_cast< MeshType * >( this->GetMesh() ) );
+  const FixedImageType * fixedImage = this->GetFixedImage();
+  this->m_FEMFilter->SetSpacing( fixedImage->GetSpacing() );
+  this->m_FEMFilter->SetOrigin( fixedImage->GetOrigin() );
+  this->m_FEMFilter->SetSize( fixedImage->GetLargestPossibleRegion().GetSize() );
+
+  typename FEMFilterType::FEMSolverType * femSolver = this->m_FEMFilter->GetModifiableFEMSolver();
+  femSolver->SetApproximationSteps( this->m_ApproximationSteps );
+  femSolver->SetOutlierRejectionSteps( this->m_OutlierRejectionSteps );
+
+  // graft our output to the filter to force the proper regions to be generated
+  this->m_FEMFilter->GraftOutput( this->GetOutput() );
+
+  this->m_FEMFilter->Update();
+
+  // graft the output of the subtract filter back onto this filter's output
+  // this is needed to get the appropriate regions passed back
+  this->GraftOutput( this->m_FEMFilter->GetOutput() );
+
+  // Create - Write ITK deformed image
+  typename FixedImageType::Pointer deformedImage;
+  this->CreateDeformedImage(deformedImage);
+  return deformedImage;
+}
+
+
+template <class TFixedImage, class TMovingImage, class TMaskImage, class TMesh, class TDeformationField>
 void
 PhysicsBasedNonRigidRegistrationMethod<TFixedImage, TMovingImage, TMaskImage, TMesh, TDeformationField>
 ::CreateDeformedImage(typename MovingImageType::Pointer& pDeformedImage)

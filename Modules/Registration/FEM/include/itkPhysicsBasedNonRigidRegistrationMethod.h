@@ -158,6 +158,9 @@ public:
   /** Create the deformed image */
   void CreateDeformedImage(typename MovingImageType::Pointer& pDeformedImage);
 
+  /** Return FEM Solver output */
+  typename FixedImageType::Pointer ApproximationInterpolationHomotopy(typename BlockMatchingFilterType::DisplacementsType * displacements);
+
 #ifdef ITK_USE_CONCEPT_CHECKING
   /** Begin concept checking */
   /** Currently only the 3D implementation is available due to a narrow
