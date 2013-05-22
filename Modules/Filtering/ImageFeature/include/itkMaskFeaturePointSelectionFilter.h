@@ -57,7 +57,7 @@ namespace itk
 
 template<
   class TImage,
-  class TMask = TImage,
+  class TMask = itk::Image< short, TImage::ImageDimension >,
   class TFeatures = PointSet< Matrix< double, TImage::ImageDimension, TImage::ImageDimension>, TImage::ImageDimension > >
 class ITK_EXPORT MaskFeaturePointSelectionFilter: public ImageToMeshFilter< TImage, TFeatures >
 {
